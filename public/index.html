@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QueueForge — Observable Job Scheduler</title><link rel="stylesheet" href="/styles.css"></head>
+<body><main>
+  <header><div><span class="eyebrow">DURABLE · CONCURRENT · OBSERVABLE</span><h1>Queue<span>Forge</span></h1><p>A production-minded job scheduler with retries, priorities, and real-time operational visibility.</p></div><div class="health"><i></i> SYSTEM HEALTHY</div></header>
+  <section class="stats" id="stats"></section>
+  <section class="grid"><article><div class="title"><h2>Schedule a job</h2><small>POST /api/jobs</small></div><form id="form">
+    <label>Job type<select name="name"><option>send-email</option><option>generate-report</option><option>unknown-handler</option></select></label>
+    <div class="row"><label>Priority<input name="priority" type="number" min="0" max="100" value="50"></label><label>Max attempts<input name="maxAttempts" type="number" min="1" max="10" value="3"></label></div>
+    <label>JSON payload<textarea name="payload" rows="5">{"recipient":"engineer@example.com","template":"welcome"}</textarea></label>
+    <button>Enqueue job <b>→</b></button><p id="message"></p>
+  </form></article><article class="wide"><div class="title"><h2>Recent jobs</h2><button class="ghost" id="refresh">↻ Refresh</button></div><div class="table"><table><thead><tr><th>Job</th><th>Status</th><th>Priority</th><th>Attempts</th><th>Created</th></tr></thead><tbody id="jobs"></tbody></table></div></article></section>
+  <footer><span>TypeScript</span><span>Fastify</span><span>PostgreSQL</span><span>Prometheus</span><span>Docker</span></footer>
+</main><script type="module" src="/app.js"></script></body></html>
