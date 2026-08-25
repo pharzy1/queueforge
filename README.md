@@ -6,9 +6,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+**[Live production dashboard](https://queueforge-xi.vercel.app)** · Vercel Functions + Neon PostgreSQL
+
 QueueForge is a portfolio-grade backend system, not a task-list demo. It shows how to prevent two workers from processing the same job, how to recover from transient failures, and how to make asynchronous systems observable.
 
-![QueueForge dashboard](docs/dashboard.svg)
+![QueueForge production dashboard](docs/production-dashboard.png)
 
 ## Engineering highlights
 
@@ -49,6 +51,8 @@ docker compose up --build
 
 Open [http://localhost:3000](http://localhost:3000). Schedule `send-email` or `generate-report`; the worker will process it and the dashboard refreshes automatically.
 
+The Vercel deployment uses a serverless adapter: one job is processed immediately after each enqueue, and a secured scheduled invocation provides recovery processing. The standalone worker remains the recommended topology for sustained workloads.
+
 ```bash
 curl -X POST http://localhost:3000/api/jobs \
   -H 'content-type: application/json' \
@@ -79,13 +83,13 @@ pnpm worker      # worker with reload, in another terminal
 
 The main test cases cover priority ordering, retry transitions, exhausted attempts, request validation, resource creation, and not-found behavior. CI repeats every quality check and verifies the production container builds.
 
-For repeatable load testing, see [the benchmark methodology](docs/BENCHMARKING.md). The repository intentionally does not claim throughput until a controlled deployment has produced raw, reproducible results.
+For repeatable load testing, see [the benchmark methodology and raw production sample](docs/BENCHMARKING.md). A small Vercel + Neon correctness run completed 60/60 measured requests successfully; its latency is reported with workload limitations rather than presented as a scale claim.
 
 ## Trade-offs and next steps
 
 PostgreSQL is a deliberate fit for moderate throughput and teams that want transactional guarantees without operating Kafka or Redis. At sustained high throughput, the polling and table churn become limiting; the next step would be partitioning/archive policies or moving dispatch to a dedicated broker while keeping PostgreSQL as the system of record.
 
-Planned extensions are authenticated multi-tenancy, cron schedules, worker heartbeats for reclaiming abandoned locks, OpenTelemetry traces, and an end-to-end test against ephemeral PostgreSQL.
+Planned extensions are authenticated multi-tenancy, user-defined cron schedules, OpenTelemetry traces, and an end-to-end test against ephemeral PostgreSQL.
 
 
 > Built a concurrent TypeScript job scheduler using Fastify and PostgreSQL, implementing priority queues, atomic worker claims, bounded exponential-backoff retries, Prometheus metrics, automated tests, Docker packaging, and CI quality gates.

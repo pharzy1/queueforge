@@ -3,5 +3,8 @@ node_modules/
 dist/
 coverage/
 .env
+.env.local
+.neon
+.vercel/
 *.log
 .DS_Store

@@ -1,13 +1,13 @@
 # Portfolio and internship launch checklist
 
-QueueForge supplies the engineering evidence. Complete these human-owned steps before placing it on a résumé.
+QueueForge supplies deployed, tested engineering evidence. Keep the remaining human-owned claims accurate before placing it on a résumé.
 
 ## Publish this repository
 
-1. Keep repository links and the live deployment URL current in `README.md`.
+1. Keep the [live production deployment](https://queueforge-xi.vercel.app) and repository links current in `README.md`.
 2. Protect the public `queueforge` repository's `main` branch by requiring CI after its first successful workflow run.
-3. Deploy the API, worker, and PostgreSQL to a provider of your choice. Add the real URL near the top of the README.
-4. Replace `docs/dashboard.svg` with a fresh screenshot from the deployed application if its appearance changes.
+3. Keep the Vercel Functions + Neon PostgreSQL deployment healthy and its secrets rotated.
+4. Refresh `docs/production-dashboard.png` whenever the deployed appearance changes.
 5. Pin the repository on your GitHub profile and write a one-sentence repository description.
 
 ## Make the evidence credible
@@ -37,7 +37,7 @@ Use only the strongest truthful version:
 
 - Built a concurrent TypeScript job scheduler with Fastify and PostgreSQL, using row-level locking to prevent duplicate execution across workers and exponential backoff for bounded retries.
 - Designed a constrained relational schema and priority index, exposed validated REST APIs and Prometheus metrics, and enforced linting, strict type checks, coverage thresholds, and container builds in CI.
-- Deployed the containerized API, worker, and database to **[provider]** and measured **[real p95 latency]** under **[real tested concurrency]** using a committed benchmark.
+- Deployed the Fastify API and serverless worker to Vercel with Neon PostgreSQL, then verified browser-to-API job scheduling, durable persistence, and successful execution in production.
 
 ## Eight-week execution plan
 

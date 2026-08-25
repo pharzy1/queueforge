@@ -20,4 +20,8 @@ Use `BENCHMARK_URL` when testing a deployed environment. Run a warm-up first, re
 - Keep the raw JSON result in `docs/benchmarks/` and explain any meaningful variance.
 - Test the worker throughput separately from API enqueue throughput; they measure different bottlenecks.
 
-No benchmark result is checked in yet because the repository has not been run against a controlled PostgreSQL environment. This is intentional: the portfolio should contain measured evidence, not invented numbers.
+## Recorded production verification
+
+The first production sample is stored in [`benchmarks/vercel-neon-2026-08-25.json`](benchmarks/vercel-neon-2026-08-25.json). After two warm-up requests, three runs each sent 20 requests at concurrency 2. All 60 measured requests succeeded. The median run recorded 1.86 requests/second, 1,023.60 ms p50 latency, and 1,109.03 ms p95 latency.
+
+This is a correctness-oriented serverless sample, not a capacity claim: every request writes to Neon and synchronously executes the 500 ms `generate-report` demonstration handler. A dedicated-worker deployment must be measured separately before claiming enqueue or worker throughput at scale.

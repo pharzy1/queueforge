@@ -3,9 +3,15 @@ import { fileURLToPath } from 'node:url';
 import cors from '@fastify/cors';
 import fastifyStatic from '@fastify/static';
 import Fastify from 'fastify';
+import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { registry } from '../infrastructure/metrics.js';
 import type { JobService } from '../services/job-service.js';
+
+type AppOptions = {
+  afterSchedule?: () => Promise<void>;
+  runWorker?: () => Promise<boolean>;
+};
 
 const createJobSchema = z.object({
   name: z.string().min(1).max(80),
@@ -15,8 +21,7 @@ const createJobSchema = z.object({
   runAt: z.string().datetime().optional(),
 });
 
-export async function buildApp(service: JobService) {
-  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
+export async function configureApp(app: FastifyInstance, service: JobService, options: AppOptions = {}) {
   await app.register(cors, { origin: false });
   await app.register(fastifyStatic, { root: path.join(path.dirname(fileURLToPath(import.meta.url)), '../../public') });
 
@@ -37,6 +42,7 @@ export async function buildApp(service: JobService) {
       name: input.name, payload: input.payload, priority: input.priority,
       maxAttempts: input.maxAttempts, ...(input.runAt ? { runAt: new Date(input.runAt) } : {}),
     });
+    await options.afterSchedule?.();
     return reply.code(201).send(job);
   });
   app.delete('/api/jobs/:id', async (request, reply) => {
@@ -44,6 +50,12 @@ export async function buildApp(service: JobService) {
     return (await service.cancel(id)) ? reply.code(204).send() : reply.code(409).send({ error: 'Job cannot be cancelled' });
   });
   app.get('/api/stats', async () => service.counts());
+  app.get('/api/internal/run-worker', async (request, reply) => {
+    if (!process.env.CRON_SECRET || request.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+      return reply.code(401).send({ error: 'Unauthorized' });
+    }
+    return { processed: await options.runWorker?.() ?? false };
+  });
 
   app.setErrorHandler((error, _request, reply) => {
     if (error instanceof z.ZodError) return reply.code(400).send({ error: 'Invalid request', details: error.flatten() });
@@ -51,4 +63,9 @@ export async function buildApp(service: JobService) {
     return reply.code(500).send({ error: 'Internal server error' });
   });
   return app;
+}
+
+export async function buildApp(service: JobService, options: AppOptions = {}) {
+  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
+  return configureApp(app, service, options);
 }
