@@ -12,6 +12,7 @@
     "start": "node dist/server.js",
     "start:worker": "node dist/worker-main.js",
     "benchmark": "tsx scripts/benchmark.ts",
+    "migrate": "tsx scripts/migrate.ts",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "lint": "eslint .",

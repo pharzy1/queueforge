@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 import { InMemoryJobRepository } from '../testing/in-memory-job-repository.js';
 import { JobService } from '../services/job-service.js';
@@ -21,5 +21,26 @@ describe('jobs API', () => {
   it('returns 404 for a missing job', async () => {
     const response = await app.inject({ method: 'GET', url: '/api/jobs/00000000-0000-4000-8000-000000000000' });
     expect(response.statusCode).toBe(404);
+  });
+  it('runs the deployment adapter after accepting a job', async () => {
+    const afterSchedule = vi.fn();
+    await app.close();
+    app = await buildApp(new JobService(new InMemoryJobRepository()), { afterSchedule });
+    await app.inject({ method: 'POST', url: '/api/jobs', payload: { name: 'send-email' } });
+    expect(afterSchedule).toHaveBeenCalledOnce();
+  });
+  it('protects the scheduled worker endpoint', async () => {
+    const previousSecret = process.env.CRON_SECRET;
+    process.env.CRON_SECRET = 'test-secret';
+    const unauthorized = await app.inject({ method: 'GET', url: '/api/internal/run-worker' });
+    expect(unauthorized.statusCode).toBe(401);
+    const runWorker = vi.fn(async () => true);
+    await app.close();
+    app = await buildApp(new JobService(new InMemoryJobRepository()), { runWorker });
+    const authorized = await app.inject({ method: 'GET', url: '/api/internal/run-worker', headers: { authorization: 'Bearer test-secret' } });
+    expect(authorized.json()).toEqual({ processed: true });
+    expect(runWorker).toHaveBeenCalledOnce();
+    if (previousSecret === undefined) delete process.env.CRON_SECRET;
+    else process.env.CRON_SECRET = previousSecret;
   });
 });

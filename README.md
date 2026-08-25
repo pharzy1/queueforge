@@ -49,6 +49,8 @@ docker compose up --build
 
 Open [http://localhost:3000](http://localhost:3000). Schedule `send-email` or `generate-report`; the worker will process it and the dashboard refreshes automatically.
 
+The Vercel deployment uses a serverless adapter: one job is processed immediately after each enqueue, and a secured scheduled invocation provides recovery processing. The standalone worker remains the recommended topology for sustained workloads.
+
 ```bash
 curl -X POST http://localhost:3000/api/jobs \
   -H 'content-type: application/json' \
