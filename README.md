@@ -84,11 +84,9 @@ PostgreSQL is a deliberate fit for moderate throughput and teams that want trans
 
 Planned extensions are authenticated multi-tenancy, cron schedules, worker heartbeats for reclaiming abandoned locks, OpenTelemetry traces, and an end-to-end test against ephemeral PostgreSQL.
 
-## Résumé-ready summary
 
 > Built a concurrent TypeScript job scheduler using Fastify and PostgreSQL, implementing priority queues, atomic worker claims, bounded exponential-backoff retries, Prometheus metrics, automated tests, Docker packaging, and CI quality gates.
 
-Do not claim production scale or measured performance until you run the benchmark and record real results. The [portfolio checklist](docs/PORTFOLIO.md) explains how to publish this honestly and turn it into stronger evidence.
 
 ## License
 
