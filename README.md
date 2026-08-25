@@ -14,6 +14,7 @@ QueueForge is a portfolio-grade backend system, not a task-list demo. It shows h
 
 - **Concurrency-safe claims:** PostgreSQL row locks and `FOR UPDATE SKIP LOCKED` distribute work without a central coordinator.
 - **Failure recovery:** bounded exponential backoff retries transient failures; exhausted jobs enter a terminal failed state.
+- **Worker leases:** abandoned running jobs become claimable after a bounded lease, preventing crashed workers from leaving work stuck forever.
 - **Relational design:** constraints encode invariants, JSONB supports flexible payloads, and a partial composite index accelerates the hot claim query.
 - **Typed boundaries:** strict TypeScript domain models plus Zod validation protect the API boundary.
 - **Operational visibility:** structured logs, health checks, queue statistics, and Prometheus-compatible metrics.
@@ -77,6 +78,8 @@ pnpm worker      # worker with reload, in another terminal
 ```
 
 The main test cases cover priority ordering, retry transitions, exhausted attempts, request validation, resource creation, and not-found behavior. CI repeats every quality check and verifies the production container builds.
+
+For repeatable load testing, see [the benchmark methodology](docs/BENCHMARKING.md). The repository intentionally does not claim throughput until a controlled deployment has produced raw, reproducible results.
 
 ## Trade-offs and next steps
 
