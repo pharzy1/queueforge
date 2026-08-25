@@ -4,8 +4,8 @@ QueueForge supplies the engineering evidence. Complete these human-owned steps b
 
 ## Publish this repository
 
-1. Replace every `YOUR_USERNAME` placeholder in `README.md`.
-2. Create a public GitHub repository named `queueforge`, push the commit history, and enable branch protection requiring CI.
+1. Keep repository links and the live deployment URL current in `README.md`.
+2. Protect the public `queueforge` repository's `main` branch by requiring CI after its first successful workflow run.
 3. Deploy the API, worker, and PostgreSQL to a provider of your choice. Add the real URL near the top of the README.
 4. Replace `docs/dashboard.svg` with a fresh screenshot from the deployed application if its appearance changes.
 5. Pin the repository on your GitHub profile and write a one-sentence repository description.

@@ -2,7 +2,7 @@
 
 > A durable, observable job scheduler that safely coordinates concurrent workers, retries transient failures, and exposes its operational state.
 
-[![CI](https://github.com/YOUR_USERNAME/queueforge/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/queueforge/actions/workflows/ci.yml)
+[![CI](https://github.com/pharzy1/queueforge/actions/workflows/ci.yml/badge.svg)](https://github.com/pharzy1/queueforge/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -41,7 +41,7 @@ The API and workers share a repository contract but are separate processes. Work
 Prerequisites: Docker Desktop and Docker Compose.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/queueforge.git
+git clone https://github.com/pharzy1/queueforge.git
 cd queueforge
 docker compose up --build
 ```
