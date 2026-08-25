@@ -42,7 +42,8 @@ export class PostgresJobRepository implements JobRepository {
       await client.query('BEGIN');
       const selected = await client.query<JobRow>(
         `SELECT * FROM jobs
-         WHERE status IN ('scheduled', 'retrying') AND run_at <= NOW()
+         WHERE (status IN ('scheduled', 'retrying') AND run_at <= NOW())
+            OR (status = 'running' AND locked_at < NOW() - INTERVAL '5 minutes')
          ORDER BY priority DESC, run_at ASC
          FOR UPDATE SKIP LOCKED LIMIT 1`,
       );
@@ -58,7 +59,7 @@ export class PostgresJobRepository implements JobRepository {
 
   private async markRunning(client: PoolClient, id: string, workerId: string): Promise<JobRow> {
     const result = await client.query<JobRow>(
-      `UPDATE jobs SET status='running', locked_by=$2, attempts=attempts+1, updated_at=NOW()
+      `UPDATE jobs SET status='running', locked_by=$2, locked_at=NOW(), attempts=attempts+1, updated_at=NOW()
        WHERE id=$1 RETURNING *`, [id, workerId],
     );
     return result.rows[0]!;
@@ -73,7 +74,7 @@ export class PostgresJobRepository implements JobRepository {
   private async transition(id: string, status: JobStatus, error: string | null, runAt: Date | null): Promise<void> {
     await this.pool.query(
       `UPDATE jobs SET status=$2, last_error=$3, run_at=COALESCE($4, run_at),
-       locked_by=NULL, updated_at=NOW() WHERE id=$1`, [id, status, error, runAt],
+       locked_by=NULL, locked_at=NULL, updated_at=NOW() WHERE id=$1`, [id, status, error, runAt],
     );
   }
 

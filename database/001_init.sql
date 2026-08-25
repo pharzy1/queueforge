@@ -12,6 +12,7 @@ CREATE TABLE jobs (
   max_attempts SMALLINT NOT NULL DEFAULT 3 CHECK (max_attempts BETWEEN 1 AND 10),
   run_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   locked_by VARCHAR(100),
+  locked_at TIMESTAMPTZ,
   last_error TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -20,3 +21,5 @@ CREATE TABLE jobs (
 CREATE INDEX jobs_claim_idx ON jobs (priority DESC, run_at ASC)
   WHERE status IN ('scheduled', 'retrying');
 CREATE INDEX jobs_created_idx ON jobs (created_at DESC);
+CREATE INDEX jobs_abandoned_idx ON jobs (locked_at)
+  WHERE status = 'running';
