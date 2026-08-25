@@ -5,6 +5,13 @@
       "maxDuration": 30
     }
   },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/index.html",
+      "permanent": false
+    }
+  ],
   "crons": [
     {
       "path": "/api/internal/run-worker",

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import cors from '@fastify/cors';
 import fastifyStatic from '@fastify/static';
 import Fastify from 'fastify';
+import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { registry } from '../infrastructure/metrics.js';
 import type { JobService } from '../services/job-service.js';
@@ -20,8 +21,7 @@ const createJobSchema = z.object({
   runAt: z.string().datetime().optional(),
 });
 
-export async function buildApp(service: JobService, options: AppOptions = {}) {
-  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
+export async function configureApp(app: FastifyInstance, service: JobService, options: AppOptions = {}) {
   await app.register(cors, { origin: false });
   await app.register(fastifyStatic, { root: path.join(path.dirname(fileURLToPath(import.meta.url)), '../../public') });
 
@@ -63,4 +63,9 @@ export async function buildApp(service: JobService, options: AppOptions = {}) {
     return reply.code(500).send({ error: 'Internal server error' });
   });
   return app;
+}
+
+export async function buildApp(service: JobService, options: AppOptions = {}) {
+  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
+  return configureApp(app, service, options);
 }

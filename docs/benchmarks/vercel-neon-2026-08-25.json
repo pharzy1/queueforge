@@ -1,0 +1,44 @@
+{
+  "environment": {
+    "target": "https://queueforge-xi.vercel.app",
+    "api": "Vercel Functions",
+    "database": "Neon PostgreSQL (pooled connection)",
+    "commitBeforeDeploymentChanges": "d830f52",
+    "workload": "generate-report; each request persists and synchronously executes one 500 ms demonstration job",
+    "requestsPerRun": 20,
+    "concurrency": 2,
+    "warmupRequests": 2
+  },
+  "runs": [
+    {
+      "successful": 20,
+      "failed": 0,
+      "durationSeconds": 10.91,
+      "requestsPerSecond": 1.83,
+      "latencyMs": { "p50": 1026.89, "p95": 1300.74, "p99": 1433.35, "max": 1433.35 },
+      "measuredAt": "2026-08-25T22:26:44.692Z"
+    },
+    {
+      "successful": 20,
+      "failed": 0,
+      "durationSeconds": 10.78,
+      "requestsPerSecond": 1.86,
+      "latencyMs": { "p50": 1023.6, "p95": 1099.97, "p99": 1543.99, "max": 1543.99 },
+      "measuredAt": "2026-08-25T22:27:05.432Z"
+    },
+    {
+      "successful": 20,
+      "failed": 0,
+      "durationSeconds": 10.69,
+      "requestsPerSecond": 1.87,
+      "latencyMs": { "p50": 1004.36, "p95": 1109.03, "p99": 1552.3, "max": 1552.3 },
+      "measuredAt": "2026-08-25T22:27:25.620Z"
+    }
+  ],
+  "medianRun": {
+    "successful": 20,
+    "failed": 0,
+    "requestsPerSecond": 1.86,
+    "latencyMs": { "p50": 1023.6, "p95": 1109.03 }
+  }
+}
